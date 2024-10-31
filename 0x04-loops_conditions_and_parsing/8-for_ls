@@ -5,5 +5,5 @@
 
 for i in *
 do
-	echo "${i//*[0-9]-/}"
+	echo "${i//[0-9]*-/}"
 done
