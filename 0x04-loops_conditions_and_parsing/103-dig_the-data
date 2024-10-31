@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# This script is displaying data of visitor groupings by IP
+# and HTTP status code
+
+apache_log="apache-access.log"
+awk '{ print $1, $9 }' "$apache_log" | sort | uniq -c | sort -nr
