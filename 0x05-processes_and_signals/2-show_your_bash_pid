@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script is displaying current running processing associated with Bash
+# shellcheck disable=SC2009
+
+ps aux | awk '/bash/ {print $0}'
