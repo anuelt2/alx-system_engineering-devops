@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# This script creates a file containing its PID
+
+script_pid="/var/run/myscript.pid"
+echo $$ > "$script_pid"
+
+trap 'echo "I hate the kill command"; rm -f "$script_pid"; exit' SIGTERM
+trap 'echo "Y U no love me?!"; rm -f "$script_pid"; exit' SIGINT
+trap 'rm -f "$script_pid"; exit' SIGQUIT
+
+while true
+do
+	echo "To infinity and beyond"
+done
