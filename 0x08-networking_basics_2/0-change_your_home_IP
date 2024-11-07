@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# This script is configuring an Ubuntu server with certain requirements
+
+hosts_file="/etc/hosts"
+new_hosts_file="$HOME/hosts.new"
+local_ip="127.0.0.1 localhost"
+new_local_ip="127.0.0.2 localhost"
+facebook="8.8.8.8 facebook.com"
+
+cp "$hosts_file" "$new_hosts_file"
+
+if grep -q "$local_ip" "$new_hosts_file"
+then
+	sed -i "s/$local_ip/$new_local_ip/" "$new_hosts_file"
+fi
+
+if grep -q 'facebook.com' "$new_hosts_file"
+then
+	sed -i '/facebook.com/d' "$new_hosts_file"
+else
+	echo "$facebook" >> "$new_hosts_file"
+fi
+
+cp -f "$new_hosts_file" "$hosts_file"
