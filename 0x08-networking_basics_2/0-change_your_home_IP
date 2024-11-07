@@ -17,8 +17,7 @@ fi
 if grep -q 'facebook.com' "$new_hosts_file"
 then
 	sed -i '/facebook.com/d' "$new_hosts_file"
-else
-	echo "$facebook" >> "$new_hosts_file"
 fi
+echo "$facebook" >> "$new_hosts_file"
 
 cp -f "$new_hosts_file" "$hosts_file"
