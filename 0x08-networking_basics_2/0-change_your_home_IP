@@ -3,7 +3,7 @@
 
 hosts_file="/etc/hosts"
 new_hosts_file="$HOME/hosts.new"
-local_ip="127.0.0.1 localhost"
+local_ip="^127.0.0.1 localhost"
 new_local_ip="127.0.0.2 localhost"
 facebook="8.8.8.8 facebook.com"
 
