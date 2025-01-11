@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Make changes to SSH config file
 
 file { '/home/anuel/.ssh/config':
