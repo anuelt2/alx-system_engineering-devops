@@ -1,26 +1,20 @@
 #!/usr/bin/env bash
 # Make changes to SSH config file
 
-file { '/home/anuel/.ssh/config':
-  ensure  => 'present',
-  mode    => '0600',
-  content => 'Host *'
+file { '/etc/ssh/ssh_config':
+  ensure => 'present',
 }
 
-exec { 'set_identityfile':
-  command => 'echo "	IdentityFile ~/.ssh/school" >> /home/anuel/.ssh/config',
-  path    => '/bin/',
-  require => Exec['add_newline'],
+file_line { 'set_identityfile':
+  path    => '/etc/ssh/ssh_config',
+  line    => 'IdentityFile ~/.ssh/school',
+  match   => '^IdentityFile',
+  replace => 'true',
 }
 
-exec { 'set_passwordauthentication':
-  command => 'echo "	PasswordAuthentication no" >> /home/anuel/.ssh/config',
-  path    => '/bin/',
-  require => Exec['add_newline'],
-}
-
-exec { 'add_newline':
-  command => 'echo "" >> /home/anuel/.ssh/config',
-  path    => '/bin/',
-  require => File['/home/anuel/.ssh/config'],
+file_line { 'set_passwordauthentication':
+  path    => '/etc/ssh/ssh_config',
+  line    => 'PasswordAuthentication no',
+  match   => 'PasswordAuthentication yes',
+  replace => 'true',
 }
