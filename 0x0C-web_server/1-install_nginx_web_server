@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# This script configures a new Ubuntu machine to install nginx
+# Configure nginx to listen on port 80
+# GET request at root returns a page containing the string Hello World!
+
+sudo apt-get update -y
+sudo apt-get install -y nginx
+sudo ufw allow "Nginx HTTP"
+sudo ufw allow OpenSSH
+sudo ufw enable
+echo "<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to nginx!</title>
+</head>
+<body>
+	Hello World!
+</body>
+</html>" | sudo tee /var/www/html/index.html
+sudo service nginx start
+sudo service nginx restart
