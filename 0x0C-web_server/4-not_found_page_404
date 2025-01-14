@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# This script configures a new Ubuntu machine to install nginx
+# Configure nginx to listen on port 80
+# Configure server so that /redirect_me redirects to another page
+# Configure server to have custom 404 page
+
+sudo apt-get update -y
+sudo apt-get install -y nginx
+sudo ufw allow "Nginx HTTP"
+sudo ufw allow OpenSSH
+sudo ufw enable
+echo "<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to nginx!</title>
+</head>
+<body>
+	Hello World!
+</body>
+</html>" | sudo tee /var/www/html/index.html
+REDIRECT_URL="https://www.youtube.com/watch?v=9t9Mp0BGnyI"
+REDIRECT_BLOCK=$(printf "\\tlocation /redirect_me {\\\\n\\t\\treturn 301 %s;\\\\n\\t}" "$REDIRECT_URL")
+sudo sed -i "/server_name _;/a\\$REDIRECT_BLOCK" /etc/nginx/sites-available/default
+echo "<!DOCTYPE html>
+<html>
+<head>
+	<title>404 Not Found</title>
+</head>
+<body>
+	Ceci n'est pas une page
+</body>
+</html>" | sudo tee /var/www/html/404.html
+sudo sed -i "/server_name _;/a\\\\terror_page 404 /404.html;" /etc/nginx/sites-available/default
+sudo service nginx start
+sudo service nginx restart
