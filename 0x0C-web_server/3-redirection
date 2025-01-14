@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# This script configures a new Ubuntu machine to install nginx
+# Configure nginx to listen on port 80
+# Configure server so that /redirect_me redirects to another page
+
+sudo apt-get update -y
+sudo apt-get install -y nginx
+sudo ufw allow "Nginx HTTP"
+sudo ufw allow OpenSSH
+sudo ufw enable
+echo "<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to nginx!</title>
+</head>
+<body>
+	Hello World!
+</body>
+</html>" | sudo tee /var/www/html/index.html
+REDIRECT_URL="https://www.youtube.com/watch?v=9t9Mp0BGnyI"
+REDIRECT_BLOCK=$(printf "	location /redirect_me {\\\\n	return 301 %s;\\\\n}", "$REDIRECT_URL")
+sudo sed -i "/listen [::]:80/a\\$REDIRECT_BLOCK" /etc/nginx/sites-available/default
+sudo service nginx start
+sudo service nginx restart
