@@ -3,7 +3,7 @@
 # Redirection must be a 301 Moved Permanently
 
 exec { 'apt_update':
-  command => 'sudo apt-get update -y',
+  command => 'sudo apt-get update',
   path    => '/bin/:/usr/bin/',
 }
 
