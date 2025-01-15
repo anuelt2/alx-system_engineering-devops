@@ -1,6 +1,4 @@
 # Install and configure Nginx server
-# Configure Nginx to listen on port 80
-# Redirection must be a 301 Moved Permanently
 
 exec { 'apt_update':
   command  => 'sudo apt-get update -y',
@@ -11,25 +9,6 @@ exec { 'apt_update':
 package { 'Nginx':
   ensure  => 'installed',
   require => Exec['apt_update'],
-}
-
-exec { 'ufw_allow_HTTP':
-  command => "sudo ufw allow 'Nginx HTTP'",
-  path    => '/usr/sbin/:/usr/bin/',
-  require => Package['Nginx'],
-}
-
-exec { 'ufw_allow_OpenSSH':
-  command => 'sudo ufw allow OpenSSH',
-  path    => '/usr/sbin/:/usr/bin/',
-  require => Exec['ufw_allow_HTTP'],
-}
-
-exec { 'ufw_enable':
-  command => 'sudo ufw enable',
-  path    => '/usr/sbin/:/usr/bin/',
-  unless  => "sudo ufw status | grep -q 'Status: active'",
-  require => Exec['ufw_allow_OpenSSH'],
 }
 
 file { '/var/www/html/index.html':
