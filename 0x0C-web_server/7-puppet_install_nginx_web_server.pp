@@ -3,8 +3,9 @@
 # Redirection must be a 301 Moved Permanently
 
 exec { 'apt_update':
-  command => 'sudo apt-get update -y',
-  path    => '/bin/:/usr/bin/',
+  command  => 'sudo apt-get update -y',
+  path     => '/bin/:/usr/bin/',
+  provider => 'shell'
 }
 
 package { 'Nginx':
@@ -43,14 +44,30 @@ file { '/var/www/html/404.html':
   require => Package['Nginx'],
 }
 
-exec { 'add_redirect_directive':
-  command => @(CMD), REDIRECT_URL='https://www.youtube.com/watch?v=9t9Mp0BGnyI';
-  REDIRECT_BLOCK=$(printf '\\tlocation /redirect_me {\\\\n\\t\\treturn 301 %s;\\\\n\\t}' "$REDIRECT_URL");
-  sudo sed -i '/server_name _;/a\\\\'$REDIRECT_BLOCK'' /etc/nginx/sites-available/default
-  | CMD,
-  path    => '/bin/:/usr/bin/',
-  unless  => "grep -q 'location /redirect_me' /etc/nginx/sites-available/default",
-  require => Exec['ufw_enable'],
+file { '/etc/nginx/sites-available/default':
+  ensure  => 'present',
+  content => '
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/html;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        location /redirect_me {
+                return 301 https://www.youtube.com/watch?v=9t9Mp0BGnyI;
+        }
+
+        error_page 404 /404.html;
+}',
+  require => Package['Nginx'],
 }
 
 exec { 'nginx_restart':
@@ -60,7 +77,7 @@ exec { 'nginx_restart':
 }
 
 service { 'nginx':
-  ensure    => 'running',
-  enable    => true,
-  require   => Package['Nginx'],
+  ensure  => 'running',
+  enable  => true,
+  require => Exec['nginx_restart'],
 }
