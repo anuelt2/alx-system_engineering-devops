@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Script to debug an Apache web server running on a docker container
+
+sudo service apache2 start
