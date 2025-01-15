@@ -6,21 +6,21 @@ exec { 'apt_update':
   provider => 'shell'
 }
 
-package { 'Nginx':
+package { 'nginx':
   ensure  => 'installed',
   require => Exec['apt_update'],
 }
 
 file { '/var/www/html/index.html':
   ensure  => 'present',
-  content => 'Hello World!\n',
-  require => Package['Nginx'],
+  content => "Hello World!\n",
+  require => Package['nginx'],
 }
 
 file { '/var/www/html/404.html':
   ensure  => 'present',
   content => "Ceci n'est pas une page\n",
-  require => Package['Nginx'],
+  require => Package['nginx'],
 }
 
 file { '/etc/nginx/sites-available/default':
@@ -46,17 +46,12 @@ server {
 
         error_page 404 /404.html;
 }',
-  require => Package['Nginx'],
-}
-
-exec { 'nginx_restart':
-  command => '/usr/bin/service nginx restart',
-  path    => ['/usr/sbin', '/usr/bin'],
-  require => '/etc/nginx/sites-available/default',
+  require => Package['nginx'],
+  notify  => Service['nginx'],
 }
 
 service { 'nginx':
   ensure  => 'running',
   enable  => true,
-  require => Exec['nginx_restart'],
+  require => Package['nginx'],
 }
