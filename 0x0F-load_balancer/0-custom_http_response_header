@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# This script configures a new Ubuntu machine to install Nginx
+# Configure nginx to listen on port 80
+# Configure server so that /redirect_me redirects to another page
+# Configure server to have custom 404 page
+
+sudo apt-get update -y
+sudo apt-get install -y nginx
+
+sudo ufw allow "Nginx HTTP"
+sudo ufw allow OpenSSH
+echo "y" | sudo ufw enable
+
+echo "Hello World!" | sudo tee /var/www/html/index.html
+
+sudo service nginx start
+
+NGINX_CONFIG_FILE="/etc/nginx/sites-available/default"
+sudo cp "$NGINX_CONFIG_FILE" "$NGINX_CONFIG_FILE".bak
+
+REDIRECT_URL="https://github.com/anuelt2"
+REDIRECT_BLOCK=$(printf "\\tlocation /redirect_me {\\\\n\\t\\treturn 301 %s;\\\\n\\t}" "$REDIRECT_URL")
+
+if ! grep -qF "location /redirect_me {" "$NGINX_CONFIG_FILE"
+then
+	sudo sed -i "/server_name _;/a\\\n$REDIRECT_BLOCK" "$NGINX_CONFIG_FILE"
+fi
+
+echo -e "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+
+if ! grep -qF "error_page 404 /404.html;" "$NGINX_CONFIG_FILE"
+then
+	sudo sed -i "/server_name _;/a\\\n\\terror_page 404 /404.html;" "$NGINX_CONFIG_FILE"
+fi
+
+if ! grep -qF "add_header X-Served-By \$hostname;" "$NGINX_CONFIG_FILE"
+then
+	sudo sed -i "/server_name _;/a\\\n\\tadd_header X-Served-By "\$hostname";" "$NGINX_CONFIG_FILE"
+fi
+
+sudo nginx -t
+exit_code=$?
+
+if (( exit_code == 0 ))
+then
+	sudo service nginx restart
+fi
