@@ -12,18 +12,6 @@ package { 'nginx':
   require => Exec['apt-update'],
 }
 
-file { '/var/www/html/index.html':
-  ensure  => 'present',
-  content => "Hello World\n",
-  require => Package['nginx'],
-}
-
-file { '/var/www/html/404.html':
-  ensure  => 'present',
-  content => "Ceci n'est pas une page\n",
-  require => Package['nginx'],
-}
-
 file { '/etc/nginx/sites-available/default':
   ensure  => 'present',
   content => '
@@ -42,12 +30,6 @@ server {
 	location / {
 		try_files $uri $uri/ =404;
 	}
-
-	location /redirect_me {
-		return 301 https://github.com/anuelt2;
-	}
-
-	error_page 404 /404.html
 }',
   require => Package['nginx'],
   notify  => Service['nginx'],
