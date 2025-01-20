@@ -2,8 +2,8 @@
 # Create a custom HTTP header response
 
 exec { 'apt-update':
-  command => '/usr/bin/apt-get -y update',
-  path    => ['/usr/sbin', '/usr/bin'],
+  command  => 'sudo apt-get -y update',
+  provider => 'shell',
 }
 
 package { 'nginx':
@@ -20,5 +20,5 @@ file_line { 'custom_http_response_header':
 exec { 'restart_nginx':
   command  => 'sudo service nginx restart',
   provider => 'shell',
-  require  => File_line['custom_http_response_header']
+  require  => File_line['custom_http_response_header'],
 }
