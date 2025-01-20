@@ -17,12 +17,6 @@ file_line { 'custom_http_response_header':
   after  => 'server_name _;',
 }
 
-service { 'nginx':
-  ensure  => 'running',
-  enable  => true,
-  require => Package['nginx'],
-}
-
 exec { 'restart_nginx':
   command  => 'sudo service nginx restart',
   provider => 'shell',
