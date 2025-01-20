@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# This script configures a new Ubuntu machine to install HAproxy load balancer
+# Configures HAproxy to send traffic to web-01 and web-02
+
+sudo apt-get -y update
+sudo apt-get install -y haproxy
+
+echo -e "\nENABLED=1" | sudo tee -a /etc/default/haproxy
+
+HAPROXY_CONFIG_FILE="/etc/haproxy/haproxy.cfg"
+
+sudo cp "$HAPROXY_CONFIG_FILE" "$HAPROXY_CONFIG_FILE".bak
+
+if ! grep "frontend http" "$HAPROXY_CONFIG_FILE"
+then
+	echo -e "
+	frontend http
+		bind *:80
+		mode http
+		default_backend webservers
+	
+	backend webservers
+		balance roundrobin
+		server 662152-web-01 54.84.143.116:80 check
+		server 662152-web-02 54.237.22.10:80 check" | sudo tee -a "$HAPROXY_CONFIG_FILE"
+fi
+
+haproxy -c -f "$HAPROXY_CONFIG_FILE"
+exit_code=$?
+
+if (( exit_code == 0))
+then
+	sudo service haproxy restart
+fi
