@@ -44,7 +44,7 @@ server {
 	}
 
 	location /redirect_me {
-		return 301 htpps://github.com/anuelt2;
+		return 301 https://github.com/anuelt2;
 	}
 
 	error_page 404 /404.html
