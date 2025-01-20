@@ -18,7 +18,7 @@ echo "<!DOCTYPE html>
 	Hello World!
 </body>
 </html>" | sudo tee /var/www/html/index.html
-REDIRECT_URL="https://www.youtube.com/watch?v=9t9Mp0BGnyI"
+REDIRECT_URL="https://github.com/anuelt2"
 REDIRECT_BLOCK=$(printf "\\tlocation /redirect_me {\\\\n\\t\\treturn 301 %s;\\\\n\\t}" "$REDIRECT_URL")
 sudo sed -i "/server_name _;/a\\$REDIRECT_BLOCK" /etc/nginx/sites-available/default
 echo "<!DOCTYPE html>
