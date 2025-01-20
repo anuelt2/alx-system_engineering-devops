@@ -2,7 +2,7 @@
 # Create a custom HTTP header response
 
 exec { 'apt-update':
-  command  => '/usr/bin/apt-get update -y',
+  command  => '/usr/bin/apt-get update',
   path     => ['/usr/sbin', '/usr/bin'],
   provider => 'shell',
 }
