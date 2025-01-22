@@ -1,31 +1,13 @@
 #!/usr/bin/env bash
 # Script that configures an Nginx server to listen on port 80
 
-if command -v nginx > /dev/null 2>&1
+sudo apt-get -y update
+sudo apt-get install -y nginx
+
+sudo nginx -t
+exit_code=$?
+
+if (( exit_code == 0))
 then
-	if ! grep -qF "listen 80 default_server;" /etc/nginx/sites-available/default
-	then
-		sed -i "/server {/ a\\\tlisten 80 default_server;" /etc/nginx/sites-available/default
-		sudo service nginx restart
-	fi
-	if sudo netstat -tuln | grep -qF :80
-	then
-		sudo service apache2 stop
-	fi
-	if ! sudo nginx -t &> /dev/null
-	then
-		sudo service nginx restart
-	fi
-	if ! sudo ufw status | grep -qF 80/tcp
-	then
-		sudo ufw allow 80/tcp
-	fi
-else
-	sudo apt-get -y update
-	apt-get install -y nginx
-	exit_code=$?
-	if (( exit_code == 0))
-	then
-		sudo service nginx start
-	fi
+	sudo service nginx restart
 fi
