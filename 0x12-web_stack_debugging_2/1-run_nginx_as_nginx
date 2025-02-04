@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Script configures nginx server to run as nginx user and listen on port 8080
+
+NGINX_CONFIG_CONF="/etc/nginx/nginx.conf"
+NGINX_CONFIG_DEFAULT="/etc/nginx/sites-available/default"
+
+cp --backup=numbered "$NGINX_CONFIG_CONF" "$NGINX_CONFIG_CONF".bak
+
+sed -i "s/^#\?user .*/user nginx;/" "$NGINX_CONFIG_CONF"
+
+cp --backup=numbered "$NGINX_CONFIG_DEFAULT" "$NGINX_CONFIG_DEFAULT".bak
+
+sed -i "s/\<80\>/8080/g" "$NGINX_CONFIG_DEFAULT"
+
+chmod 644 "$NGINX_CONFIG_CONF"
+
+pkill -9 apache2
+
+sudo nginx -t
+exit_code=$?
+
+if (( exit_code == 0 ))
+then
+	sudo -u nginx service nginx restart
+	chown nginx:nginx /run/nginx.pid
+	sudo -u nginx service nginx restart
+fi
