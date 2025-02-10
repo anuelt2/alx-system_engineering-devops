@@ -25,7 +25,6 @@ if __name__ == "__main__":
     filename = f"{user_id}.csv"
 
     with open(filename, "w") as file:
-        data = f'"{user_id}","{username}",'
         for task in todos:
             data = ('"{}","{}","{}","{}"'
                     .format(
