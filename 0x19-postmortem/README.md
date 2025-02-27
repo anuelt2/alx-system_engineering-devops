@@ -1,13 +1,13 @@
-# Postmortem: Nginx nNot Listening on Port 80 (A Tragic Tale of a Missing Symlink)
+# Postmortem: Nginx Not Listening on Port 80 (A Tragic Tale of a Missing Symlink)
 
 ![devops-debugging-headaches](image-asset.png)
 
 # Issue Summary
-## Duration of the Outage: The outage was detected at 09:20 hrs GMT and was resolved by 09:58 hrs GMT. A total downtime of 38 minutes. And yes I was confused.
+Duration of the Outage: The outage was detected at 09:20 hrs GMT and was resolved by 09:58 hrs GMT. A total downtime of 38 minutes. And yes I was confused.
 
-## Impact: HTTP requests to the Nginx webserver failed. Every single one of them. (Obviously, in hindsight. I mean...)
+Impact: HTTP requests to the Nginx webserver failed. Every single one of them. (Obviously, in hindsight. I mean...)
 
-## Root Cause: The default site configuration file was not activated because it was not linked in the sites-enabled directory. Lonely time for default config file. No symbolic links (no sneaky links either).
+Root Cause: The default site configuration file was not activated because it was not linked in the sites-enabled directory. Lonely time for default config file. No symbolic links (no sneaky links either).
 
 # Timeline (The Exciting Troubleshooting. Haha)
 - 09:20 hrs GMT: Issue detected when a curl 0:80 request to the ALX Nginx server returned "curl: (7) Failed to connect to 0 port 80: Connection refused".
@@ -29,6 +29,7 @@ Upon realization of the root cause of this issue, a command was issued to create
 # Corrective and Preventive Measures
 ## Improvements/Fixes:
 Ensure Nginx is correctly configured and all active sites properly linked and activated whenever configuration changes or new installations are made. A script is written to be run to ensure consistency.
+
 [The Script](postmortem_fix)
 
 ## Checklist (This is not happening twice. No!):
