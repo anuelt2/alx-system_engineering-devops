@@ -30,10 +30,10 @@ Upon realization of the root cause of this issue, a command was issued to create
 ## Improvements/Fixes:
 Ensure Nginx is correctly configured and all active sites properly linked and activated whenever configuration changes or new installations are made. A script is written to be run to ensure consistency.
 
-[The Script](postmortem_fix)
-
 ## Checklist (This is not happening twice. No!):
 - Create and execute a script to create a symbolic link from the default Nginx site configuration in /etc/nginx/sites-available/ to /etc/nginx/sites-enabled/.
 - Test the Nginx configuration for any errors (nginx -t).
 - If test is successful, restart Nginx.
-- Monitor to ensure Nginx is active, the site is active and listening on port 80. 
+- Monitor to ensure Nginx is active, the site is active and listening on port 80.
+
+[The Script](postmortem_fix)
