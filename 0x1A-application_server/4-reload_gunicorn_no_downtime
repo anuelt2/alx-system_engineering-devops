@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Script to reload Gunicorn in a graceful way
+
+GUNICORN_PID=$(
+ss -tulnp | grep -E ':5003\s' | grep -oP 'pid=\K\d+' | while read -r pid
+do
+	ppid=$(ps -o ppid= -p "$pid" | awk 'NR==1 {print $1}')
+	if [ "$ppid" -eq 1 ]
+	then
+		echo "$pid"
+		break
+	fi
+done
+		)
+
+if [ -n "$GUNICORN_PID" ]
+then
+	echo "Gracefully reloading gunicorn service $GUNICORN_PID ..."
+	kill -SIGHUP "$GUNICORN_PID"
+	echo "Gunicorn reload successful."
+else
+	echo "Gunicorn service not running."
+fi
