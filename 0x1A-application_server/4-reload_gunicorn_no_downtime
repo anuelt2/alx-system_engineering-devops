@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
 # Script to reload Gunicorn in a graceful way
 
-pgrep gunicorn |  xargs kill -SIGHUP
+pgrep -f gunicorn | while read -r pid
+do
+	if [ "$(ps -o ppid= -p "$pid" | awk '{ print $1 }')" -eq 1 ]
+	then
+		kill -SIGHUP "$pid"
+	fi
+done
